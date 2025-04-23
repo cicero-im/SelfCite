@@ -8,10 +8,10 @@ from longcite_modeling_llama import LlamaForCausalLM as AutoModelForCausalLM
 import traceback
 import torch.multiprocessing as mp
 import argparse
-import random
+import secrets
 
 torch.manual_seed(0)
-random.seed(0)
+secrets.SystemRandom().seed(0)
 torch.cuda.manual_seed_all(0)
 
 parser = argparse.ArgumentParser()

@@ -9,10 +9,10 @@ from collections import defaultdict
 import time
 import sys
 import argparse
-import random
+import secrets
 
 torch.manual_seed(0)
-random.seed(0)
+secrets.SystemRandom().seed(0)
 torch.cuda.manual_seed_all(0)
 
 parser = argparse.ArgumentParser()

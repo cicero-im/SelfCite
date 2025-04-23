@@ -1,5 +1,5 @@
 import re
-import random
+import secrets
 
 def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: str) -> str:
     """
@@ -96,7 +96,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                 # If length is 1 or 2, directly make [1, 1]
                 lengths = [1, 1]
             else:
-                random_split = random.randint(1, length-1)
+                random_split = secrets.SystemRandom().randint(1, length-1)
                 lengths = [random_split, length-random_split]
         else:
             if length <= how_many:
@@ -106,7 +106,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                 # Randomly split length into how_many parts, e.g., length=5, how_many=3 → [1, 2, 2]
                 # Directly select unique split points from 1~length-1
                 lengths = []
-                cut_points = random.sample(range(1, length), how_many-1)
+                cut_points = secrets.SystemRandom().sample(range(1, length), how_many-1)
                 cut_points.sort()
                 for i in range(how_many-1):
                     lengths.append(cut_points[i] - (cut_points[i-1] if i > 0 else 0))
@@ -116,8 +116,8 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
         if not chosen_cites:
             # If there are no cites in chosen, define a range
             # Assume selecting randomly between [100-100] ~ [105-105]
-            chosen_min = random.randint(100, 300)
-            chosen_max = random.randint(chosen_min, 500)
+            chosen_min = secrets.SystemRandom().randint(100, 300)
+            chosen_max = secrets.SystemRandom().randint(chosen_min, 500)
         else:
             chosen_min = min(s for (s,e) in chosen_cites)
             chosen_max = max(e for (s,e) in chosen_cites)
@@ -143,7 +143,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
             tries += 1
 
             # Decide to place before or after
-            direction = random.choice(["before", "after"])
+            direction = secrets.choice(["before", "after"])
             # span = 1 or 2
             span = lengths[len(result)] #random.choice([1, 2])
             
@@ -164,7 +164,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                 start_lower_bound, start_upper_bound = start_upper_bound, start_lower_bound
             
             # Randomly select a start
-            start_c = random.randint(start_lower_bound, max(start_lower_bound, start_upper_bound))
+            start_c = secrets.SystemRandom().randint(start_lower_bound, max(start_lower_bound, start_upper_bound))
 
             end_c = start_c + (span - 1)
 
@@ -288,13 +288,13 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                     if len(reject_cites) == 1:
                         first_cite = reject_cites[0]
                         if first_cite[0] - 1 not in cited_sents_dict and first_cite[1] + 1 not in cited_sents_dict:
-                            first_diff = random.randint(0, coverage_diff)
+                            first_diff = secrets.SystemRandom().randint(0, coverage_diff)
                         elif first_cite[0] - 1 not in cited_sents_dict:
                             first_diff = coverage_diff
                         elif first_cite[1] + 1 not in cited_sents_dict:
                             first_diff = 0
                         else:
-                            first_diff = random.randint(0, coverage_diff)
+                            first_diff = secrets.SystemRandom().randint(0, coverage_diff)
                         second_diff = coverage_diff - first_diff
 
                         new_first_cite = (first_cite[0] - first_diff, first_cite[1] + second_diff)
@@ -305,13 +305,13 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                         first_cite = reject_cites[0]
                         last_cite = reject_cites[-1]
                         if first_cite[0] - 1 not in cited_sents_dict and last_cite[1] + 1 not in cited_sents_dict:
-                            first_diff = random.randint(0, coverage_diff)
+                            first_diff = secrets.SystemRandom().randint(0, coverage_diff)
                         elif first_cite[0] - 1 not in cited_sents_dict:
                             first_diff = coverage_diff
                         elif last_cite[1] + 1 not in cited_sents_dict:
                             first_diff = 0
                         else:
-                            first_diff = random.randint(0, coverage_diff)
+                            first_diff = secrets.SystemRandom().randint(0, coverage_diff)
                         last_diff = coverage_diff - first_diff
                         new_first_cite = (first_cite[0] - first_diff, first_cite[1])
                         new_last_cite = (last_cite[0], last_cite[1] + last_diff)
@@ -327,7 +327,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                     new_reject_cites = []
                     if len(reject_cites) == 1:
                         first_cite = reject_cites[0]
-                        first_diff = random.randint(0, -coverage_diff)
+                        first_diff = secrets.SystemRandom().randint(0, -coverage_diff)
                         second_diff = -coverage_diff - first_diff
                         new_first_cite = (first_cite[0] + first_diff, first_cite[1] - second_diff)
                         if new_first_cite not in chosen_cites:
@@ -336,7 +336,7 @@ def create_edited_reject_prediction(reject_prediction: str, chosen_prediction: s
                     else:
                         first_cite = reject_cites[0]
                         last_cite = reject_cites[-1]
-                        first_diff = random.randint(0, -coverage_diff)
+                        first_diff = secrets.SystemRandom().randint(0, -coverage_diff)
                         last_diff = -coverage_diff - first_diff
                         new_first_cite = (first_cite[0] + first_diff, first_cite[1])
                         new_last_cite = (last_cite[0], last_cite[1] - last_diff)
