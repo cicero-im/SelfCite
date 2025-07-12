@@ -38,7 +38,7 @@ if not os.path.exists("LongBench-Cite.json"):
     import requests
     url = "https://github.com/THUDM/LongCite/raw/refs/heads/main/LongBench-Cite/LongBench-Cite.json"
     with open("LongBench-Cite.json", "wb") as f:
-        f.write(requests.get(url).content)
+        f.write(requests.get(url, timeout=60).content)
 
 # mp.set_start_method("spawn", force=True)
 ipts = json.load(open("LongBench-Cite.json"))
