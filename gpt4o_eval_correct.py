@@ -11,8 +11,8 @@ import re
 import requests
 import time
 import traceback
-import random
 import argparse
+import secrets
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--openai_key", type=str, default=None)
@@ -153,7 +153,7 @@ def gpt_score_fewshot(prediction, ground_truth, **kwargs):
     few_shot_answers = [x['answer'] for x in few_shots]
     few_shot_scores = [x['score'] for x in few_shots]
     c = list(zip(few_shot_answers, few_shot_scores))
-    random.shuffle(c)
+    secrets.SystemRandom().shuffle(c)
     few_shot_answers, few_shot_scores = zip(*c)
     few_shot_ans_scores = []
     for k in range(len(few_shot_answers)):

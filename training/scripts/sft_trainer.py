@@ -1,5 +1,4 @@
 import inspect
-import random
 import warnings
 from collections import defaultdict
 from contextlib import nullcontext
@@ -34,6 +33,7 @@ from trl.trainer.utils import (
     peft_module_casting_to_bf16,
     trl_sanitze_kwargs_for_tagging,
 )
+import secrets
 
 if is_peft_available():
     from peft import PeftModel, get_peft_model, prepare_model_for_kbit_training
@@ -531,7 +531,7 @@ class SFTTrainer(Trainer):
         # Sample and save to game log if requested (for one batch to save time)
         if self.generate_during_eval and hasattr(dataloader.dataset, "select"):
             num_samples = len(dataloader.dataset)
-            random_indices = random.sample(range(num_samples), k=self.args.eval_batch_size)
+            random_indices = secrets.SystemRandom().sample(range(num_samples), k=self.args.eval_batch_size)
             random_batch_dataset = dataloader.dataset.select(random_indices)
             random_batch = self.data_collator(random_batch_dataset)
             random_batch = self._prepare_inputs(random_batch)
